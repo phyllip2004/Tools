@@ -42,17 +42,17 @@ def network_connect(ip, user, password, enablesecret):
     except Exception as e:
         print('Error: ' + str(e))
 
-def network_set_defaults(connection, loggingserver, snmpstring):
+def network_set_defaults(connection, loggingserver, snmpstring, accesslist):
     running_config = connection.send_command('show run')
     config_commands = ['snmp-server enable traps voice',            #enabling traps
                       'snmp-server enable traps isdn',
                       'snmp-server enable traps dial',
                       'snmp-server enable traps dsp',
                       'logging trap errors',                        #set trap level errors
-                      'ip access-list standard ANMMS-Monitoring',   #configure acl to only permit the logging server
+                      'ip access-list standard {accesslist}',   #configure acl to only permit the logging server
                       f'permit ip {loggingserver}',
-                      f'snmp-server community {snmpstring} RO ANMMS-Monitoring',
-                      f'snmp-server host {loggingserver} version 2c @nMm5-$nmp',
+                      f'snmp-server community {snmpstring} RO {accesslist}',
+                      f'snmp-server host {loggingserver} version 2c {snmpstring}',
                       f'logging host {loggingserver}']
     connection.send_config_set(config_commands=config_commands)
     running_config = connection.send_command('show run')
@@ -171,10 +171,21 @@ def cuc_set_defaults(connection, loggingserver, snmpstring, pawsaccount, pawspas
             connection.send(
                 'run sql select paramvalue from processconfig where paramname = \'RemoteSyslogServerName5\'')
             connection.expect('admin:')
+
             if loggingserver in connection.current_output_clean:
                 print('Successfully set RemoteSyslogServername5 on CUC publisher.')
             else:
                 print('Failed to set RemoteSyslogServername5 on CUC publisher.')
+            connection.send(
+                f'run sql update processconfig set paramvalue = \'7\' where paramname = \'RemoteSyslogSeverity\'')
+            connection.expect('admin:')
+            connection.send(
+                f'run sql select paramvalue from processconfig where paramname = \'RemoteSyslogSeverity\'')
+            connection.expect('admin:')
+            if '7' in connection.current_output_clean:
+                print('Successfully set RemoteSyslogSeverity on CUC publisher.')
+            else:
+                print('Failed to set RemoteSyslogSeverity on CUC publisher.')
         else:
             pass
     set_cuc_paws(connection, pawsaccount, pawspassword, grab)
@@ -197,7 +208,7 @@ def set_cuc_paws(connection, pawsaccount, pawspassword, grab):
         connection.send('No')
         connection.expect('.*')
         time.sleep(1)
-        connection.send('ANMMS-Monitoring')
+        connection.send(f'{pawsaccount}')
         connection.expect('.*')
         time.sleep(1)
     connection.send(f'{pawspassword}')
@@ -258,6 +269,7 @@ pawsaccount = ''
 pawspassword = ''
 axlusername = ''
 acgname = ''
+accesslist = ''
 
 if loggingserver == '':
     while True:
@@ -291,7 +303,7 @@ with open('DeviceList.csv', 'r') as device_list_csv:    # read this csv file wit
             if row['devicetype'] == 'NETWORK':
                 print('Connecting to network device: ' + row['ip'])
                 connection = network_connect(row['ip'], row['username'], row['password'], row['enablesecret'])
-                network_set_defaults(connection, loggingserver, snmpstring)
+                network_set_defaults(connection, loggingserver, snmpstring, accesslist)
             if row['devicetype'] == 'CUCM':
                 print('Connecting to CUCM device: ' + row['ip'])
                 connection = cucm_connect(row['ip'], row['username'], row['password'])
