@@ -49,7 +49,7 @@ def network_set_defaults(connection, loggingserver, snmpstring, accesslist):
                       'snmp-server enable traps dial',
                       'snmp-server enable traps dsp',
                       'logging trap errors',                        #set trap level errors
-                      'ip access-list standard {accesslist}',   #configure acl to only permit the logging server
+                      f'ip access-list standard {accesslist}',   #configure acl to only permit the logging server
                       f'permit ip {loggingserver}',
                       f'snmp-server community {snmpstring} RO {accesslist}',
                       f'snmp-server host {loggingserver} version 2c {snmpstring}',
