@@ -21,8 +21,20 @@ def api_list_phone():
     if 'searchDescription' in request.args:
         searchDescription = str(request.args['searchDescription'])
         searchCriteria = '<description>' + searchDescription + '</description>'
+    if 'searchProtocol' in request.args:
+        searchProtocol = str(request.args['searchProtocol'])
+        searchCriteria = '<protocol>' + searchProtocol + '</protocol>'
+    if 'searchCallingSearchSpaceName' in request.args:
+        searchCallingSearchSpaceName = str(request.args['searchCallingSearchSpaceName'])
+        searchCriteria = '<callingSearchSpaceName>' + searchCallingSearchSpaceName + '</callingSearchSpaceName>'
+    if 'searchDevicePoolName' in request.args:
+        searchDevicePoolName = str(request.args['searchDevicePoolName'])
+        searchCriteria = '<devicePoolName>' + searchDevicePoolName + '</devicePoolName>'
+    if 'searchSecurityProfileName' in request.args:
+        searchSecurityProfileName = str(request.args['searchSecurityProfileName'])
+        searchCriteria = '<securityProfileName>' + searchSecurityProfileName + '</securityProfileName>'
         
-    payload=f"<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ns=\"http://www.cisco.com/AXL/API/12.5\"><soapenv:Header/><soapenv:Body><ns:listPhone><searchCriteria>{searchCriteria}</searchCriteria><returnedTags><name/><description/><ownerUserName/></returnedTags></ns:listPhone></soapenv:Body></soapenv:Envelope>"
+    payload=f"<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ns=\"http://www.cisco.com/AXL/API/12.5\"><soapenv:Header/><soapenv:Body><ns:listPhone><searchCriteria>{searchCriteria}</searchCriteria><returnedTags><name/><description/><ownerUserName/><protocol/><callingSearchSpaceName/><devicePoolName/><securityProfileName/></returnedTags></ns:listPhone></soapenv:Body></soapenv:Envelope>"
     headers = {
 		'Authorization': 'Basic YXBwYWRtaW46cWF6d3N4UUFaV1NY',
 		'Content-Type': 'text/plain',
