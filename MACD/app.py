@@ -13,26 +13,26 @@ def home():
     return '''<h1>Provisioning API</h1>
     <p>Do a dance.</p>'''
 
-@app.route('/api/v1/macd/list_phone', methods=['POST'])
-def api_list_phone():
-    if 'searchName' in request.args:
-        searchName = str(request.args['searchName'])
-        searchCriteria = '<name>' + searchName + '</name>'
-    if 'searchDescription' in request.args:
-        searchDescription = str(request.args['searchDescription'])
-        searchCriteria = '<description>' + searchDescription + '</description>'
-    if 'searchProtocol' in request.args:
-        searchProtocol = str(request.args['searchProtocol'])
-        searchCriteria = '<protocol>' + searchProtocol + '</protocol>'
-    if 'searchCallingSearchSpaceName' in request.args:
-        searchCallingSearchSpaceName = str(request.args['searchCallingSearchSpaceName'])
-        searchCriteria = '<callingSearchSpaceName>' + searchCallingSearchSpaceName + '</callingSearchSpaceName>'
-    if 'searchDevicePoolName' in request.args:
-        searchDevicePoolName = str(request.args['searchDevicePoolName'])
-        searchCriteria = '<devicePoolName>' + searchDevicePoolName + '</devicePoolName>'
-    if 'searchSecurityProfileName' in request.args:
-        searchSecurityProfileName = str(request.args['searchSecurityProfileName'])
-        searchCriteria = '<securityProfileName>' + searchSecurityProfileName + '</securityProfileName>'
+@app.route('/api/v1/macd/listphone', methods=['POST'])
+def api_listphone():
+    if 'name' in request.args:
+        name = str(request.args['name'])
+        searchCriteria = '<name>' + name + '</name>'
+    if 'description' in request.args:
+        description = str(request.args['description'])
+        searchCriteria = '<description>' + description + '</description>'
+    if 'protocol' in request.args:
+        protocol = str(request.args['protocol'])
+        searchCriteria = '<protocol>' + protocol + '</protocol>'
+    if 'callingSearchSpaceName' in request.args:
+        callingSearchSpaceName = str(request.args['callingSearchSpaceName'])
+        searchCriteria = '<callingSearchSpaceName>' + callingSearchSpaceName + '</callingSearchSpaceName>'
+    if 'devicePoolName' in request.args:
+        devicePoolName = str(request.args['devicePoolName'])
+        searchCriteria = '<devicePoolName>' + devicePoolName + '</devicePoolName>'
+    if 'securityProfileName' in request.args:
+        securityProfileName = str(request.args['securityProfileName'])
+        searchCriteria = '<securityProfileName>' + securityProfileName + '</securityProfileName>'
         
     payload=f"<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ns=\"http://www.cisco.com/AXL/API/12.5\"><soapenv:Header/><soapenv:Body><ns:listPhone><searchCriteria>{searchCriteria}</searchCriteria><returnedTags><name/><description/><ownerUserName/><protocol/><callingSearchSpaceName/><devicePoolName/><securityProfileName/></returnedTags></ns:listPhone></soapenv:Body></soapenv:Envelope>"
     headers = {
@@ -42,4 +42,5 @@ def api_list_phone():
     }
     response = requests.request("POST", url, headers=headers, data=payload, verify=False)
     return str(response.content)
+
 app.run()
