@@ -1,3 +1,9 @@
+# Written by phyllip2004
+# This app functions as a middle man between a developer and CUCM. Uses flask to provide an API gateway to CUCM which is easier to read and understand.
+# Think of this as a translator which can take standard API posts and will translate to SOAP then forward the request along returning the result.
+# The purpose of this app is to simplify the method with which individuals query CUCM APIs as well as provide access control.
+# v0.0.1
+
 import flask
 import requests
 from flask import request
