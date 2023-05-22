@@ -59,10 +59,10 @@ def network_set_defaults(connection, loggingserver, snmpstring):
                       'snmp-server enable traps dial',
                       'snmp-server enable traps dsp',
                       'logging trap errors',                        #set trap level errors
-                      'ip access-list standard ANMMS-Monitoring',   #configure acl to only permit the logging server
+                      f'ip access-list standard {axlusername}',   #configure acl to only permit the logging server
                       f'permit ip {loggingserver}',
-                      f'snmp-server community {snmpstring} RO ANMMS-Monitoring',
-                      f'snmp-server host {loggingserver} version 2c @nMm5-$nmp',
+                      f'snmp-server community {snmpstring} RO {axlusername}',
+                      f'snmp-server host {loggingserver} version 2c {snmpstring}',
                       f'logging host {loggingserver}']
     connection.send_config_set(config_commands=config_commands)
     running_config = connection.send_command('show run')
